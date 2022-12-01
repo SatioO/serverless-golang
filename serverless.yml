@@ -34,7 +34,7 @@ provider:
           - dynamodb:PutItem
           - dynamodb:UpdateItem
           - dynamodb:DeleteItem
-          Resource: "arn:aws:dynamodb:us-east-1:335695074212:table/ORGANIZATION"
+          Resource: "arn:aws:dynamodb:us-east-1:335695074212:table/IAM"
         - Effect: "Allow"
           Action: 
           - logs:CreateLogGroup
@@ -76,25 +76,31 @@ package:
     - ./bin/**
 
 functions:
-  get_users:
-    handler: bin/users/get
-    events:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+  get_realms:
+    handler: bin/realm/get
+    events:
       - httpApi:
-          path: /users
+          path: /realms
           method: get
+  # get_users:
+  #   handler: bin/users/get
+  #   events:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+  #     - httpApi:
+  #         path: /users
+  #         method: get
 
-  create_organization:
-    handler: bin/organization/create
-    events:
-      - httpApi:
-          path: /organizations
-          method: post
-  create_project:
-    handler: bin/project/create
-    events:
-      - httpApi:
-          path: /organizations/{organizationId}/projects
-          method: post
+  # create_organization:
+  #   handler: bin/organization/create
+  #   events:
+  #     - httpApi:
+  #         path: /organizations
+  #         method: post
+  # create_project:
+  #   handler: bin/project/create
+  #   events:
+  #     - httpApi:
+  #         path: /organizations/{organizationId}/projects
+  #         method: post
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
