@@ -12,10 +12,10 @@ import (
 )
 
 type Realm struct {
-	RealmID     string `dynamodbav:"realmId"`
-	Name        string `dynamodbav:"name"`
-	DisplayName string `dynamodbav:"display_name"`
-	Enabled     bool   `dynamodbav:"enabled"`
+	RealmID     string `json:"realm_id" dynamodbav:"PK"`
+	Name        string `json:"name" dynamodbav:"name"`
+	DisplayName string `json:"display_name" dynamodbav:"display_name"`
+	Enabled     string `json:"enabled" dynamodbav:"enabled"`
 }
 
 type RealmRepo struct{}
@@ -27,15 +27,9 @@ func NewRealmRepo() *RealmRepo {
 func (RealmRepo) GetRealms() ([]Realm, error) {
 	db := db.GetDBClient()
 
-	out, err := db.Query(context.TODO(), &dynamodb.QueryInput{
-		TableName:              aws.String("IAM"),
-		KeyConditionExpression: aws.String("PK = :hashKey"),
-		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":hashKey": &types.AttributeValueMemberS{Value: "realm#c693d78f-9fde-4abb-aa5b-73a56a5fa400"},
-		},
+	out, err := db.Scan(context.TODO(), &dynamodb.ScanInput{
+		TableName: aws.String("IAM"),
 	})
-
-	log.Println(out)
 
 	if err != nil {
 		return nil, err
@@ -62,14 +56,11 @@ func (RealmRepo) DeleteRealm() error {
 
 func toRealm(data []map[string]types.AttributeValue) ([]Realm, error) {
 	realm := []Realm{}
-	log.Println("Unmarshelling")
 
 	if err := attributevalue.UnmarshalListOfMaps(data, &realm); err != nil {
 		log.Println(err)
 		return nil, err
 	}
-
-	log.Println(realm)
 
 	return realm, nil
 }
